@@ -816,14 +816,35 @@
         }
 
         // Export Data Utility
-        function exportDataJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(staffDatabase, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "omrah_school_messages.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+        
+function exportDataJSON() {
+    try {
+        const json = JSON.stringify(staffDatabase, null, 2);
+        const blob = new Blob(
+            [json],
+            { type: "application/json;charset=utf-8" }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "omrah_school_messages.json";
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 1000);
+    } catch (error) {
+        alert("تعذر إنشاء النسخة الاحتياطية. حاولي مرة أخرى.");
+        console.error(error);
+    }
+}
+
         }
 
         // Restore Defaults
